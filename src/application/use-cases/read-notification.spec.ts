@@ -1,12 +1,12 @@
 import { InMemoryNotificationsRepository } from '@test/repositories/in-memory-notifications-repository';
-import { CancelNotification } from './cancel-notification';
 import { NotificationNotFound } from './errors/notification-not-found';
 import { makeNotification } from '@test/factories/notification-factory';
+import { ReadNotification } from './read-notification';
 
-describe('Cancel notification', () => {
-  it('should be able to send a notification', async () => {
+describe('Read notification', () => {
+  it('should be able to read a notification', async () => {
     const notificationsRepository = new InMemoryNotificationsRepository();
-    const sut = new CancelNotification(notificationsRepository);
+    const sut = new ReadNotification(notificationsRepository);
 
     const notification = makeNotification();
 
@@ -16,14 +16,14 @@ describe('Cancel notification', () => {
       notificationId: notification.id,
     });
 
-    expect(notificationsRepository.notifications[0].cenceledAt).toEqual(
+    expect(notificationsRepository.notifications[0].readAt).toEqual(
       expect.any(Date),
     );
   });
 
-  it('should not be able to delete a notification when id does not exist', async () => {
+  it('should not be able to read a notification when id does not exist', async () => {
     const notificationsRepository = new InMemoryNotificationsRepository();
-    const sut = new CancelNotification(notificationsRepository);
+    const sut = new ReadNotification(notificationsRepository);
 
     expect(() => {
       return sut.execute({

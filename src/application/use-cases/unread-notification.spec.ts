@@ -1,14 +1,17 @@
 import { InMemoryNotificationsRepository } from '@test/repositories/in-memory-notifications-repository';
-import { CancelNotification } from './cancel-notification';
 import { NotificationNotFound } from './errors/notification-not-found';
 import { makeNotification } from '@test/factories/notification-factory';
+import { UnreadNotification } from './unread-notification';
 
-describe('Cancel notification', () => {
-  it('should be able to send a notification', async () => {
+describe('Read notification', () => {
+  it('should be able to unread a notification', async () => {
     const notificationsRepository = new InMemoryNotificationsRepository();
-    const sut = new CancelNotification(notificationsRepository);
 
-    const notification = makeNotification();
+    const sut = new UnreadNotification(notificationsRepository);
+
+    const notification = makeNotification({
+      readAt: new Date(),
+    });
 
     await notificationsRepository.create(notification);
 
@@ -16,14 +19,12 @@ describe('Cancel notification', () => {
       notificationId: notification.id,
     });
 
-    expect(notificationsRepository.notifications[0].cenceledAt).toEqual(
-      expect.any(Date),
-    );
+    expect(notificationsRepository.notifications[0].readAt).toEqual(null);
   });
 
-  it('should not be able to delete a notification when id does not exist', async () => {
+  it('should not be able to unread a notification when id does not exist', async () => {
     const notificationsRepository = new InMemoryNotificationsRepository();
-    const sut = new CancelNotification(notificationsRepository);
+    const sut = new UnreadNotification(notificationsRepository);
 
     expect(() => {
       return sut.execute({
